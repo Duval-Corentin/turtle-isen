@@ -3,15 +3,22 @@
         <sui-header color="blue" size="big">Options</sui-header>
         <sui-divider horizontal> Taille de l'image </sui-divider>
         <div>
-            <a is="sui-label">
+            <sui-label :color='(image_width <= minimum_width) ? "red" : "blue"'>
                 Largeur
-                <sui-input type="number" value="image_width" />
-            </a>
-            <a is="sui-label">
+                <sui-input type="number" v-model="image_width" :error="image_width <= minimum_width" :placeholder="image_width"/>
+                px
+            </sui-label>
+            <a is="sui-label" :color='(image_height <= minimum_height) ? "red" : "blue"'>
                 Hauteur
-                <sui-input type="number" value="image_height"/>
+                <sui-input type="number" v-model="image_height" :placeholder="image_height"/>
+                px
             </a>
+            <sui-message :error="true" v-show="image_height <= minimum_height || image_width <= minimum_width">
+                <p> la taille minimal de l'image doit être de {{minimum_width}} x {{minimum_height}} pixels</p>
+            </sui-message>
+
         </div>
+        <sui-divider horizontal> Options de compilation </sui-divider>
         <sui-menu tabular>
             <a
                 is="sui-menu-item"
@@ -19,30 +26,51 @@
                 :key="item"
                 :active="isActive(item)"
                 :content="item"
-                @click="select(item)"
+                @click.prevent="select(item)"
             />
         </sui-menu>
-        <div id="static_options" v-if="isActive(compilation_type[0])">
-            in statique
+        <div id="static_options" class="option_div" v-show="isActive(compilation_type[0])">
+            Compile le programme sous forme d'un canevas. Chaque instruction créée une nouvelle couche sur le canevas.
         </div>
-        <div id="animated_options" v-if="isActive(compilation_type[1])">
-            in animated
+        <div id="animated_options" class="option_div" v-show="isActive(compilation_type[1])">
+        <p>Compile le programme sous forme d'une animation.</p>
+            <sui-form id="animated_options_form">
+                <sui-form-field>
+                    <sui-checkbox toggle label="Affichage de la tortue"/>
+                </sui-form-field>
+                <sui-form-field>
+                    <a is="sui-label" :color='(between_frame_delay <= min_frame_delay || between_frame_delay >= max_frame_delay) ? "red" : "blue"'>
+                        Délai entre chaque frame (ms)
+                        <sui-input type="number" v-model="between_frame_delay" :placeholder="between_frame_delay"/> 
+                    </a>
+                </sui-form-field>
+            </sui-form>
+            <sui-message :error="true" v-show="between_frame_delay <= min_frame_delay || between_frame_delay >= max_frame_delay">
+                <p> le delai doit être compris entre {{min_frame_delay}} ms et {{max_frame_delay}} ms.</p>
+            </sui-message>
         </div>
-
-        <sui-button size="big" color="blue" content="Compilation" :loading="is_compiling" />
+        <sui-divider horizontal> Compilation </sui-divider>
+        <sui-button size="big" color="blue" content="Lancer" :loading="is_compiling" />
+        <sui-button size="big" color="blue" content="Telecharger" :disabled="!compilation_successful" />
     </div>
 </template>
 
 <script>
 export default {
     name: "options_compilator",
-    props : ['is_compiling'],
+    props : ['is_compiling', 'compilation_successful'],
     data: function () {
         return {
             compilation_type: ['Statique', 'Animé'],
             active_compilation_type: 'Statique',
             image_width: 1000,
-            image_height: 800
+            image_height: 800,
+            minimum_width: 50,
+            minimum_height: 50,
+            turtle_display: true,
+            between_frame_delay: 300,
+            min_frame_delay: 10,
+            max_frame_delay: 3000
         }
     },
     methods: {
@@ -51,11 +79,17 @@ export default {
         },
         select(name) {
             this.active_compilation_type = name;
-        },
+        }
     }
 }
 </script>
 
 <style scoped>
-
+#animated_options_form {
+    width:200px;
+    margin-bottom: 2%;
+}
+.option_div {
+    height: 200px;
+}
 </style>

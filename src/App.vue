@@ -5,13 +5,14 @@
       <sui-header>Matthieu SIMON - Corentin DUVAL</sui-header>
       <sui-divider horizontal></sui-divider>
 
-      <sui-grid collums="30" celled="internally">
+      <sui-grid collums="30" celled>
         <sui-grid-column :width="6"> 
           <sui-header color="blue" size="big"> Editeur </sui-header>
-          <editor v-model="content" lang="javascript" height="500" @init="editorInit" theme="monokai"></editor> 
+          <sui-divider horizontal></sui-divider>
+          <editor v-model="content" lang="javascript" height="450" @init="editorInit" theme="textmate"></editor> 
           </sui-grid-column>
-        <sui-grid-column :width="4"> <docs_table></docs_table> </sui-grid-column>
-        <sui-grid-column :width="6"> <options_compilator :is_compiling="is_compiling"></options_compilator> </sui-grid-column>
+        <sui-grid-column :width="5"> <var_table :variables="variables"></var_table> </sui-grid-column>
+        <sui-grid-column :width="5"> <keep-alive> <options_compilator :is_compiling="is_compiling" :compilation_successful="compilation_successful"></options_compilator> </keep-alive> </sui-grid-column>
       </sui-grid>
     </header>
     
@@ -29,7 +30,22 @@ export default {
   data: function () {
     return{
       content: "",
-      is_compiling: true
+      is_compiling: false,
+      compilation_successful : false,
+      variables: [
+        {x:10},
+        {y:30},
+        {bite: 12.56844564},
+        {bite: 12.56844564},
+        {bite: 12.56844564},
+        {bite: 12.56844564},
+        {bite: 12.56844564},
+        {bite: 12.56844564},
+        {bite: 12.56844564},
+        {bite: 12.56844564},
+        {bite: 12.56844564},
+        {chatte: "j'aime les gros chibres"}
+      ]
     }
   },
   components: {
@@ -40,11 +56,16 @@ export default {
     editor: require('vue2-ace-editor')
   },
   methods: {
-        editorInit: function () {
+        editorInit: function (editor) {
             require('brace/ext/language_tools') //language extension prerequsite...
             require('brace/mode/javascript')    //language
-            require('brace/theme/monokai')
+            require('brace/theme/textmate')
             require('brace/snippets/javascript') //snippet
+
+            editor.setOptions({
+              fontSize: "14px",
+              showPrintMargin: false
+            })
         }
   }
 }
