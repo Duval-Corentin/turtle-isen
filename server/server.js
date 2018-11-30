@@ -16,14 +16,11 @@ router.use(bodyParser.json());
 router.route('/compile')
 .post(function (req, res) {
     var response;
-    console.log("req:");
-    console.log(req.body);
     try{
+        console.error = function(){};
         const parser = new jison.Parser(grammar);
         response = parser.parse(req.body.code);
-        console.log(response);
     }catch(e){
-        console.log(String(e));
         response = {
             error: e
         }
