@@ -5,13 +5,14 @@
       <sui-header>Matthieu SIMON - Corentin DUVAL</sui-header>
       <sui-divider horizontal></sui-divider>
 
-      <sui-grid collums="30" celled>
+      <sui-grid celled>
         <sui-grid-column :width="6"> 
           <sui-header color="blue" size="big"> Editeur </sui-header>
           <sui-divider horizontal></sui-divider>
           <editor v-model="content" lang="javascript" height="450" @init="editorInit" theme="textmate"></editor> 
           </sui-grid-column>
-        <sui-grid-column :width="5"> <var_table :variables="variables"></var_table> </sui-grid-column>
+        <sui-grid-column :width="3"> <var_table :variables="variables"></var_table> </sui-grid-column>
+        <sui-grid-column :width="2"> <utilitary></utilitary> </sui-grid-column>
         <sui-grid-column :width="5"> <keep-alive> <options_compilator :is_compiling="is_compiling" :compilation_successful="compilation_successful"></options_compilator> </keep-alive> </sui-grid-column>
       </sui-grid>
     </header>
@@ -20,6 +21,7 @@
 </template>
 
 <script>
+import utilitary from './components/utilitary'
 import var_table from './components/var_table'
 import rendered_image from './components/rendered_image'
 import docs_table from './components/docs_table'
@@ -53,6 +55,7 @@ export default {
     rendered_image,
     docs_table,
     options_compilator,
+    utilitary,
     editor: require('vue2-ace-editor')
   },
   methods: {
