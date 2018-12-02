@@ -6,7 +6,7 @@
             <color-picker v-model="colors" />
         </div>
         <sui-divider></sui-divider>
-        <sui-button v-on:click="goto('docs-table')" color='blue' size='big' content='Documentation' />
+        <sui-button v-on:click="goto('docs')" color='blue' size='big' content='Documentation' />
     </div>    
 </template>
 
@@ -23,6 +23,14 @@ export default {
     },
     components: {
         'color-picker': Sketch
+    },
+     methods : {
+        goto(refName) {
+            var element = this.$refs[refName];
+            console.log(this.$refs);
+            var top = element.offsetTop;
+            window.scrollTo(0, top);
+        }
     }
 }
 </script>

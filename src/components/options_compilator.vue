@@ -36,7 +36,7 @@
         <p>Compile le programme sous forme d'une animation.</p>
             <sui-form id="animated_options_form">
                 <sui-form-field>
-                    <sui-checkbox toggle label="Affichage de la tortue"/>
+                    <sui-checkbox toggle v-model="turtle_display" label="Affichage de la tortue"/>
                 </sui-form-field>
                 <sui-form-field>
                     <a is="sui-label" :color='(between_frame_delay <= min_frame_delay || between_frame_delay >= max_frame_delay) ? "red" : "blue"'>
@@ -50,7 +50,7 @@
             </sui-message>
         </div>
         <sui-divider horizontal> Compilation </sui-divider>
-        <sui-button size="big" color="blue" content="Lancer" :loading="is_compiling" />
+        <sui-button size="big" color="blue" content="Lancer" :loading="is_compiling" v-on:click="$emit('compile', getCompileOptions())"/>
         <sui-button size="big" color="blue" content="Telecharger" :disabled="!compilation_successful" />
     </div>
 </template>
@@ -79,6 +79,16 @@ export default {
         },
         select(name) {
             this.active_compilation_type = name;
+        },
+        getCompileOptions(){
+            console.log(this.image_width);
+            return {
+                compilation_type: this.active_compilation_type,
+                turtle_display: this.turtle_display,
+                between_frame_delay: this.between_frame_delay,
+                image_width: this.image_width,
+                image_height: this.image_height
+            }
         }
     }
 }

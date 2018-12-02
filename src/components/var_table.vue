@@ -1,9 +1,9 @@
 <template>
-    <div class="docs_table">
+    <div class="var_table_div">
         <sui-header color="blue" size="big"> Variables </sui-header>
         <sui-divider horizontal></sui-divider>
         <div class="var_table">
-            <sui-table celled>
+            <sui-table celled size='small' compact='very' color='blue'>
                 <sui-table-header>
                     <sui-table-row>
                         <sui-table-header-cell>Nom</sui-table-header-cell>
@@ -12,10 +12,15 @@
                     </sui-table-row>
                 </sui-table-header>
                 <sui-table-body class="table_body">
-                    <sui-table-row v-for="(variable, index) in variables" :key="index">
-                        <sui-table-cell>{{Object.keys(variable)[0]}}</sui-table-cell>
-                        <sui-table-cell>{{typeof Object.values(variable)[0]}}</sui-table-cell>
-                        <sui-table-cell>{{Object.values(variable)[0]}}</sui-table-cell>
+                    <sui-table-row v-for="(value, key) in turtle_variables" :key="key" state='warning'>
+                        <sui-table-cell>tortue_{{key}}</sui-table-cell>
+                        <sui-table-cell>{{typeof value}}</sui-table-cell>
+                        <sui-table-cell>{{value}}</sui-table-cell>
+                    </sui-table-row>
+                    <sui-table-row v-for="(value, key) in variables" :key="key">
+                        <sui-table-cell>{{key}}</sui-table-cell>
+                        <sui-table-cell>{{typeof value}}</sui-table-cell>
+                        <sui-table-cell>{{value}}</sui-table-cell>
                     </sui-table-row>
                 </sui-table-body>
             </sui-table>
@@ -27,7 +32,7 @@
 <script>
 export default {
     name: "docs_table",
-    props: ['variables'],
+    props: ['variables', 'turtle_variables'],
     data: function () {
         return {
         }
