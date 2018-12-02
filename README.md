@@ -22,10 +22,10 @@ npm run build --report
 
 ``` bash
 #clone project
-git clone 
+git clone https://github.com/Duval-Corentin/turtle-isen.git
 
-# go to server div
-cd server/
+# go to server folder
+cd turtle-isen/server/
 
 #run server
 node server
