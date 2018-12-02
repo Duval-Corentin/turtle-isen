@@ -21,6 +21,9 @@ npm run build --report
 ## Run App
 
 ``` bash
+#clone project
+git clone 
+
 # go to server div
 cd server/
 
