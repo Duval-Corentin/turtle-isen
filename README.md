@@ -42,7 +42,6 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 
 ## TO DO :
 ### Finir V1:
-- régler bug angle (gramaire ou SVGgenerator)
 - ajouter docs --> explication générale + type du langage + exemples 
 - centrer elements page html
 - débuger / retirer bonton anchor docs
