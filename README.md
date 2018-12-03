@@ -40,6 +40,7 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 
 ## TO DO :
 ### Finir V1:
+- ajouter gestion des couleurs (map color_variables avec couleur prédéfinis) + (variables de différents types)
 - ajouter docs --> explication générale + type du langage + exemples 
 - stopper les logs de wannings gramaires server side
 - corriger les fautes
