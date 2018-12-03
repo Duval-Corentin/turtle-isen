@@ -25,7 +25,13 @@ npm run build --report
 git clone https://github.com/Duval-Corentin/turtle-isen.git
 
 # go to server folder
-cd turtle-isen/server/
+cd turtle-isen
+
+# install dependencies 
+npm install
+
+#go to server folder
+cd server
 
 #run server
 node server
