@@ -3,8 +3,9 @@
 %%
 
 \s+                   /* skip whitespace */
+"//"[A-Za-z0-9 ]*     return 'COMMENT'
 [0-9]+("."[0-9]+)?\b  return 'NUMBER'
-"#"[A-Fa-f0-9]{6}     return 'COLOR'
+"#"[A-Fa-f0-9]{6}     return 'COLOR_TOKEN'
 "degree"|"Degree"     return 'ANGLE_UNIT'
 "radian"|"Radian"     return 'ANGLE_UNIT'
 "*"                   return '*'
@@ -25,7 +26,8 @@
 ";"                   return 'SEMICOLON'
 ":"                   return 'COLON'
 
-"var"|"Var"|"VAR"     return 'VAR'
+"nombre"|"Nombre"|"NOMBRE"     return 'NUMBER_VAR'
+"couleur"|"Couleur"|"COULEUR"  return 'COLOR_VAR'
 
 "c:"                  return 'C_OPT'
 "l:"                  return 'L_OPT'
@@ -39,12 +41,14 @@
 "rectangle"|"Rectangle"                     return 'RECTANGLE'
 "cercle"|"Cercle"                           return 'CIRCLE'
 "couleur_fond"|"Couleur_fond"               return 'BACKGROUND_COLOR'
-"ellipse"|"Ellipse"                           return 'ELLIPSE'
+"ellipse"|"Ellipse"                         return 'ELLIPSE'
 "repeter"|"Repeter"                         return 'FOR'
 "fin_repeter"                               return 'END_FOR'
 "si"|"Si"                                   return 'IF'
 "alors"|"Alors"                             return 'THEN'
 "sinon"|"Sinon"                             return 'ELSE'
+
+
 
 [A-Za-z_]+[A-Za-z0-9_]*                     return 'IDENTIFIER'
 /lex
@@ -56,6 +60,17 @@
 
     var instructions = []
     var variables = new Map();
+    var color_variables = new Map();
+    color_variables["rouge"] = "#FF0000";
+    color_variables["bleu"] = "#0000FF";
+    color_variables["vert"] = "#00FF00";
+    color_variables["jaune"] = "#FFFF00";
+    color_variables["violet"] = "#FF00FF";
+    color_variables["blanc"] = "#FFFFFF";
+    color_variables["noir"] = "#000000";
+    color_variables["bleu_ciel"] = "#00FFF0";
+    color_variables["orange"] = "#FF9300";
+    color_variables["rose"] = "#FF0059";
 
     const base_options = {
         draw: {
@@ -93,6 +108,14 @@
 pgm
     : elements EOF
         {
+            var color_iterator = color_variables.entries();
+            for(let i = 0; i < 9; i++){
+                color_iterator.next();
+            }
+            while(!color_iterator.done()){
+                variables[color_iterator.value[0]] = color_iterator.value[1];
+                color_iterator.next();
+            }
             return {
                 instructions: instructions,
                 variables: variables,
@@ -110,20 +133,37 @@ elements
     | commande
     ;
 
-commande 
+commande
+    : 'COMMENT'
     /* Rules for variables management */
-    : 'VAR' 'IDENTIFIER' 'EQUAL' expr 'SEMICOLON'
+    | 'NUMBER_VAR' 'IDENTIFIER' 'EQUAL' expr 'SEMICOLON'
         {
             if(!variables[String($2)]){
                 variables[String($2)] = Number($4);
             }else{
-                throw new Error("variable " + String($2) + " allready defined before");
+                throw new Error("Number variable " + String($2) + " allready defined before");
             }
         }
     | 'IDENTIFIER' 'EQUAL' expr 'SEMICOLON'
         {
             if(variables[String($1)]){
                 variables[String($1)] = $3;
+            }else{
+                throw new Error("Variable " + String($1) + " must be declared before assignation");
+            }
+        }
+    | 'COLOR_VAR' 'IDENTIFIER' 'EQUAL' color 'SEMICOLON'
+        {
+            if(!color_variables[String($2)]){
+                color_variables[String($2)] = String($4);
+            } else {
+                throw new Error("Color variable " + String($2) + " allready defined before");
+            }
+        }
+    | 'IDENTIFIER' 'EQUAL' color 'SEMICOLON'
+        {
+            if(color_variables[String($1)]){
+                color_variables[String($1)] = String($3);
             }else{
                 throw new Error("Variable " + String($1) + " must be declared before assignation");
             }
@@ -220,8 +260,8 @@ commande
         }
     | 'MOVE' expr 'SEMICOLON'
         {
-            turtle_x += Math.round(Number($2) * Math.cos(turtle_angle * (180/Math.PI)));
-            turtle_y += Math.round(Number($2) * Math.sin(turtle_angle * (180/Math.PI)));
+            turtle_x += Math.round(Number($2) * Math.cos(turtle_angle * (Math.PI/180)));
+            turtle_y += Math.round(Number($2) * Math.sin(turtle_angle * (Math.PI/180)));
         }
     | 'MOVE' expr 'COLON' expr 'SEMICOLON'
         {
@@ -310,7 +350,7 @@ commande
                 options: Object.assign({}, base_options.circle)
             });
         }
-    | 'BACKGROUND_COLOR' 'COLOR' 'SEMICOLON'
+    | 'BACKGROUND_COLOR' color 'SEMICOLON'
         {
             instructions.push({
                 command: "BACKGROUND_COLOR",
@@ -376,7 +416,7 @@ expr
             if(variables[String($1)] != undefined){
                 $$ = Number(variables[String($1)])
             }else{
-                throw new Error("variable " + String($1) + " must be declared before");
+                throw new Error(" Number variable " + String($1) + " must be declared before");
             }
         }
     | E
@@ -384,6 +424,21 @@ expr
     | PI
         {$$ = Math.PI;}
     ; 
+
+color
+    : 'COLOR_TOKEN' 
+        {
+            $$ = String(yytext)
+        }
+    | IDENTIFIER
+        {
+            if(color_variables[String($1)] != undefined){
+                $$ = String(color_variables[String($1)])
+            }else{
+                throw new Error(" Color variable " + String($1) + " must be declared before");
+            }
+        }
+    ;
 
 opts_draw
     : opt_draw opt_draw opt_draw
@@ -419,7 +474,7 @@ opts_draw
     ;
 
 opt_draw
-    : 'C_OPT' 'COLOR'
+    : 'C_OPT' color
         {
             $$ = {type: "color", value: String($2)}
         }
@@ -476,7 +531,7 @@ opts_rect
         }
     ;
 opt_rect
-    : 'C_OPT' 'COLOR'
+    : 'C_OPT' color
         {
             $$ = {type: "color", value: String($2)}
         }
@@ -528,7 +583,7 @@ opts_circle
     ;
 
 opt_circle
-    : 'C_OPT' 'COLOR'
+    : 'C_OPT' color
         {
             $$ = {type: "color", value: String($2)}
         }

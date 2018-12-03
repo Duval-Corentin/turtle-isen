@@ -1,5 +1,6 @@
 <template>
-    <div>
+    <div class="rendered-image-div">
+        <sui-header color='blue' size='big'> Résultat </sui-header>
         <sui-message id="error-message" :error="true" v-if="Boolean(machine_code.error)">
             <h2>La compilation a échoué</h2>
             <p>Erreur de syntaxe à la ligne {{machine_code.error.hash.line + 1}}</p>
@@ -41,8 +42,12 @@ export default {
     max-height: 800;
     overflow: scroll;
     margin-left: 50px;
+    width:80%;
 }
 #error-message {
     width: 50%;
+}
+.rendered-image-div {
+    text-align: center;
 }
 </style>

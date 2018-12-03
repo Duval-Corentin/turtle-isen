@@ -21,7 +21,6 @@
       <sui-grid-row>
         <sui-grid-column :width="1"></sui-grid-column>
         <sui-grid-column :width="14">
-          <sui-header color='blue' size='big'> Résultat </sui-header>
           <rendered_image :machine_code="machine_code" :compile_options="compile_options"></rendered_image>
         </sui-grid-column>
         <sui-grid-column :width="1"></sui-grid-column>
@@ -100,7 +99,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 header {
   text-align: center;
   padding-top: 1%;
@@ -108,6 +107,12 @@ header {
 
 h1 {
   margin-top: 1%;
+}
+sui-header {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
 }
 
 </style>

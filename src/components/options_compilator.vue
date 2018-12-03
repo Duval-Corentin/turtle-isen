@@ -94,7 +94,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 #animated_options_form {
     width:200px;
     margin-bottom: 2%;

@@ -1,7 +1,7 @@
 <template>
     <div class="docs-table" ref="docs">
         <sui-header size='big' color='blue'>Documentation </sui-header>
-        <sui-accordion exclusive styled>
+        <sui-accordion exclusive styled class="doc-accordion">
             <div v-for="(instruction, index) in instructions_docs" :key="index">
                 <sui-accordion-title>
                     <sui-icon name='dropdown' />
@@ -305,5 +305,12 @@ export default {
 .opt {
     color : blue;
 }
-
+.docs-table {
+    text-align: center;
+}
+.doc-accordion{
+    width:100%;
+    margin-left: auto;
+    margin-right: auto;
+}
 </style>

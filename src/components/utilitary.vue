@@ -5,8 +5,6 @@
         <div class='color-picker'>
             <color-picker v-model="colors" />
         </div>
-        <sui-divider></sui-divider>
-        <sui-button v-on:click="goto('docs')" color='blue' size='big' content='Documentation' />
     </div>    
 </template>
 
@@ -38,5 +36,9 @@ export default {
 <style scoped>
 .color-picker {
     height: 352px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
 }
 </style>
