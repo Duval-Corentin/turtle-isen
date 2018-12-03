@@ -131,8 +131,8 @@ commande
     /* Rules for draw command*/
     | 'DRAW' expr opts_draw 'SEMICOLON'
         {
-            var x = turtle_x + Math.round(Number($2) * Math.cos(turtle_angle));
-            var y = turtle_y + Math.round(Number($2) * Math.sin(turtle_angle));
+            var x = turtle_x + Math.round(Number($2) * Math.cos(turtle_angle * (Math.PI/180)));
+            var y = turtle_y + Math.round(Number($2) * Math.sin(turtle_angle * (Math.PI/180)));
             instructions.push({
                 command: "DRAW",
                 from: {
@@ -150,8 +150,8 @@ commande
         }
     | 'DRAW' expr 'SEMICOLON'
         {
-            var x = turtle_x + Math.round(Number($2) * Math.cos(turtle_angle));
-            var y = turtle_y + Math.round(Number($2) * Math.sin(turtle_angle));
+            var x = turtle_x + Math.round(Number($2) * Math.cos(turtle_angle * (Math.PI/180)));
+            var y = turtle_y + Math.round(Number($2) * Math.sin(turtle_angle * (Math.PI/180)));
             instructions.push({
                 command: "DRAW",
                 from: {
@@ -220,8 +220,8 @@ commande
         }
     | 'MOVE' expr 'SEMICOLON'
         {
-            turtle_x += Math.round(Number($2) * Math.cos(turtle_angle));
-            turtle_y += Math.round(Number($2) * Math.sin(turtle_angle));
+            turtle_x += Math.round(Number($2) * Math.cos(turtle_angle * (180/Math.PI)));
+            turtle_y += Math.round(Number($2) * Math.sin(turtle_angle * (180/Math.PI)));
         }
     | 'MOVE' expr 'COLON' expr 'SEMICOLON'
         {
