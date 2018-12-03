@@ -1,7 +1,5 @@
 # turtle-isen
 
-> A Vue.js project
-
 ## Build Setup
 
 ``` bash
@@ -43,12 +41,8 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 ## TO DO :
 ### Finir V1:
 - ajouter docs --> explication générale + type du langage + exemples 
-- centrer elements page html
-- débuger / retirer bonton anchor docs
 - stopper les logs de wannings gramaires server side
 - corriger les fautes
-- bug contour figure
-- bug affichage remplissage des figures
 
 ### Implémentation V2: 
 - BOUCLE FOR /!\ /!\
