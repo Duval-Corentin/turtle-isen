@@ -4,7 +4,7 @@ class SVGgenerator{
 	constructor(DOM_element, width, height, code, compilation_type, delay, turtle_display){
 		this.instructions = code;
 		this.draw = SVG(DOM_element).size(width, height);
-        this.animation = 1;
+        this.animation = 0;
         this.width = width;
         this.height = height;
 	}
