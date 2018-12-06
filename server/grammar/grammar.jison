@@ -3,7 +3,7 @@
 %%
 
 \s+                   /* skip whitespace */
-"//"[A-Za-z0-9 ]*     return 'COMMENT'
+"//"[A-Za-z0-9 \_ \; \: \, \!]*     return 'COMMENT'
 [0-9]+("."[0-9]+)?\b  return 'NUMBER'
 "#"[A-Fa-f0-9]{6}     return 'COLOR_TOKEN'
 "degree"|"Degree"     return 'ANGLE_UNIT'
@@ -40,7 +40,7 @@
 "déplacer"|"deplacer"|"Déplacer"|"Deplacer" return 'MOVE'
 "rectangle"|"Rectangle"                     return 'RECTANGLE'
 "cercle"|"Cercle"                           return 'CIRCLE'
-"couleur_fond"|"Couleur_fond"               return 'BACKGROUND_COLOR'
+"fond"|"Fond"               return 'BACKGROUND_COLOR'
 "ellipse"|"Ellipse"                         return 'ELLIPSE'
 "repeter"|"Repeter"                         return 'FOR'
 "fin_repeter"                               return 'END_FOR'
@@ -108,14 +108,6 @@
 pgm
     : elements EOF
         {
-            var color_iterator = color_variables.entries();
-            for(let i = 0; i < 9; i++){
-                color_iterator.next();
-            }
-            while(!color_iterator.done()){
-                variables[color_iterator.value[0]] = color_iterator.value[1];
-                color_iterator.next();
-            }
             return {
                 instructions: instructions,
                 variables: variables,
@@ -135,38 +127,12 @@ elements
 
 commande
     : 'COMMENT'
-    /* Rules for variables management */
-    | 'NUMBER_VAR' 'IDENTIFIER' 'EQUAL' expr 'SEMICOLON'
+    | 'BACKGROUND_COLOR' color 'SEMICOLON'
         {
-            if(!variables[String($2)]){
-                variables[String($2)] = Number($4);
-            }else{
-                throw new Error("Number variable " + String($2) + " allready defined before");
-            }
-        }
-    | 'IDENTIFIER' 'EQUAL' expr 'SEMICOLON'
-        {
-            if(variables[String($1)]){
-                variables[String($1)] = $3;
-            }else{
-                throw new Error("Variable " + String($1) + " must be declared before assignation");
-            }
-        }
-    | 'COLOR_VAR' 'IDENTIFIER' 'EQUAL' color 'SEMICOLON'
-        {
-            if(!color_variables[String($2)]){
-                color_variables[String($2)] = String($4);
-            } else {
-                throw new Error("Color variable " + String($2) + " allready defined before");
-            }
-        }
-    | 'IDENTIFIER' 'EQUAL' color 'SEMICOLON'
-        {
-            if(color_variables[String($1)]){
-                color_variables[String($1)] = String($3);
-            }else{
-                throw new Error("Variable " + String($1) + " must be declared before assignation");
-            }
+            instructions.push({
+                command: "BACKGROUND_COLOR",
+                color: String($2)
+            });
         }
     /* Rules for draw command*/
     | 'DRAW' expr opts_draw 'SEMICOLON'
@@ -332,7 +298,7 @@ commande
                 },
                 angle: turtle_angle,
                 radius_x: Number($2),
-                raduis_y: Number($3),
+                radius_y: Number($3),
                 options: $4
             });
         }
@@ -350,16 +316,38 @@ commande
                 options: Object.assign({}, base_options.circle)
             });
         }
-    | 'BACKGROUND_COLOR' color 'SEMICOLON'
+    /* Rules for variables management */
+    | 'NUMBER_VAR' 'IDENTIFIER' 'EQUAL' expr 'SEMICOLON'
         {
-            instructions.push({
-                command: "BACKGROUND_COLOR",
-                color: String($2)
-            });
+            if(!variables[String($2)]){
+                variables[String($2)] = Number($4);
+            }else{
+                throw new Error("Number variable " + String($2) + " allready defined before");
+            }
         }
-    | 'FOR' '(' expr ')' ':'
+    | 'IDENTIFIER' 'EQUAL' expr 'SEMICOLON'
         {
-            this.begin('for_loop');
+            if(variables[String($1)]){
+                variables[String($1)] = $3;
+            }else{
+                throw new Error("Variable " + String($1) + " must be declared before assignation");
+            }
+        }
+    | 'COLOR_VAR' 'IDENTIFIER' 'EQUAL' color 'SEMICOLON'
+        {
+            if(!color_variables[String($2)]){
+                color_variables[String($2)] = String($4);
+            } else {
+                throw new Error("Color variable " + String($2) + " allready defined before");
+            }
+        }
+    | 'IDENTIFIER' 'EQUAL' color 'SEMICOLON'
+        {
+            if(color_variables[String($1)]){
+                color_variables[String($1)] = String($3);
+            }else{
+                throw new Error("Variable " + String($1) + " must be declared before assignation");
+            }
         }
     ;
 
@@ -384,17 +372,21 @@ expr
         {$$ = -$2;}
     | '(' expr ')'
         {$$ = $2;}
+    | '!' expr
+        {
+            $$ = !$2;
+        }
     | expr '<' 'EQUAL' expr
         {
             $$ = ($1 <= $3) ? 1 : 0;
         }
     | expr '>' 'EQUAL' expr
         {
-            $$ = ($1 >= $4) ? 1 : 0;
+            $$ = ($1 > $4) ? 1 : 0;
         }
     | expr '<' expr
         {
-            $$ = ($1 < $4) ? 1 : 0;
+            $$ = ($1 < $3) ? 1 : 0;
         }
     | expr '>' expr
         {

@@ -81,7 +81,6 @@ export default {
             this.active_compilation_type = name;
         },
         getCompileOptions(){
-            console.log(this.image_width);
             return {
                 compilation_type: this.active_compilation_type,
                 turtle_display: this.turtle_display,

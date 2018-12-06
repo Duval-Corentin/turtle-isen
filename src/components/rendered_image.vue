@@ -24,7 +24,6 @@ export default {
     },
     watch: {
         machine_code: function(new_val, old_val) {
-            console.log(this.machine_code);
             if(this.draw){
                     this.draw.clear();
                 }

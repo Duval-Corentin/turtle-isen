@@ -11,7 +11,7 @@
         <sui-grid-column :width="5"> 
           <sui-header color="blue" size="big"> Editeur </sui-header>
           <sui-divider horizontal></sui-divider>
-          <editor v-model="editor_content" lang="javascript" height="450" @init="editorInit" theme="textmate"></editor> 
+          <editor v-model="editor_content" height="450" @init="editorInit" theme="textmate"></editor> 
           </sui-grid-column>
         <sui-grid-column :width="3"> <var_table :variables="variables" :turtle_variables="turtle_variables"></var_table> </sui-grid-column>
         <sui-grid-column :width="3"> <utilitary></utilitary> </sui-grid-column>
@@ -68,10 +68,8 @@ export default {
   },
   methods: {
         editorInit: function (editor) {
-            require('brace/ext/language_tools') //language extension prerequsite...
-            require('brace/mode/javascript')    //language
+            require('brace/ext/language_tools') //language extension prerequsite..
             require('brace/theme/textmate')
-            require('brace/snippets/javascript') //snippet
 
             editor.setOptions({
               fontSize: "14px",

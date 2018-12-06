@@ -28,7 +28,6 @@ router.route('/compile')
 .post(function (req, res) {
     var response;
     try{
-        console.error = function(){};
         const parser = new jison.Parser(grammar);
         response = parser.parse(req.body.code);
     }catch(e){
@@ -36,7 +35,6 @@ router.route('/compile')
             error: e
         }
     }
-
     res.json(response);
 });
 

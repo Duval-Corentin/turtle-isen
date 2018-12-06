@@ -275,7 +275,7 @@ export default {
                     ]
                 },
                 {
-                    name: "Couleur_fond",
+                    name: "fond",
                     mandatory_params: [
                         {
                             name: "couleur fond",
