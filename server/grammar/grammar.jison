@@ -175,8 +175,8 @@ commande
         }
     | 'DRAW' expr 'COLON' expr opts_draw 'SEMICOLON'
         {
-            var x = turtle_x + Number($2);
-            var y = turtle_y + Number($4);
+            var x = Number($2);
+            var y = Number($4);
             instructions.push({
                 command: "DRAW",
                 from: {
@@ -194,8 +194,8 @@ commande
         }
     | 'DRAW' expr 'COLON' expr 'SEMICOLON'
         {
-            var x = turtle_x + Number($2);
-            var y = turtle_y + Number($4);
+            var x = Number($2);
+            var y = Number($4);
             instructions.push({
                 command: "DRAW",
                 from: {
@@ -226,13 +226,41 @@ commande
         }
     | 'MOVE' expr 'SEMICOLON'
         {
-            turtle_x += Math.round(Number($2) * Math.cos(turtle_angle * (Math.PI/180)));
-            turtle_y += Math.round(Number($2) * Math.sin(turtle_angle * (Math.PI/180)));
+            var x = Math.round(Number($2) * Math.cos(turtle_angle * (Math.PI/180)));
+            var y = Math.round(Number($2) * Math.sin(turtle_angle * (Math.PI/180)));
+
+            instructions.push({
+                command: "MOVE",
+                from: {
+                    x: turtle_x,
+                    y: turtle_y
+                },
+                to: {
+                    x : x,
+                    y : y
+                }
+            });
+            turtle_x = x;
+            turtle_y = y;
         }
     | 'MOVE' expr 'COLON' expr 'SEMICOLON'
         {
-            turtle_x += Number($2);
-            turtle_y += Number($4);
+            var x = Number($2);
+            var y = Number($4);
+
+            instructions.push({
+                command: "MOVE",
+                from: {
+                    x: turtle_x,
+                    y: turtle_y
+                },
+                to: {
+                    x : x,
+                    y : y
+                }
+            });
+            turtle_x = x;
+            turtle_y = y;
         }
     | 'RECTANGLE' expr expr opts_rect 'SEMICOLON'
         {
