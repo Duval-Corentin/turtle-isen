@@ -45,66 +45,56 @@ class SVGgenerator{
 		if(this.array[0].command == 'RECTANGLE') 		this.generateRectangle(this.turtle, this.background, this.array, 0);
 		if(this.array[0].command == 'ELLIPSE') 			this.generateEllipse(this.turtle, this.background, this.array, 0);
 		if(this.array[0].command == 'CIRCLE') 			this.generateCircle(this.turtle, this.background, this.array, 0);
+		if(this.array[0].command == 'MOVE') 			this.generateMove(this.turtle, this.background, this.array, 0);
 	}
 
 	//Gère la couleur de fond
 	generateBackground(turtle, background, queue, index){
 		var current = queue[index];
-		background.animate(1000, '-', this.delay).fill(current.color).after( () => {
-						if(queue[++index] != undefined) {
-							if(queue[index].command == 'BACKGROUND_COLOR') 	this.generateBackground(turtle, background, queue, index);
-							if(queue[index].command == 'DRAW') 				this.generateDraw(turtle, background, queue, index);
-							if(queue[index].command == 'RECTANGLE') 		this.generateRectangle(turtle, background, queue, index);
-							if(queue[index].command == 'ELLIPSE') 			this.generateEllipse(turtle, background, queue, index);
-							if(queue[index].command == 'CIRCLE') 			this.generateCircle(turtle, background, queue, index);
-						}
-					});
+		var next;
+		
+		next = background.animate(this.delay, '-', 0).fill(current.color)
 
-		//Rend l'animation statique si elle n'est pas demandée
-		if(!this.animation) background.finish();
+		//Passe au prochain élément
+		this.next(turtle, background, queue, index, next);
+
 	}
 
 	//Génère le code des lignes
 	generateDraw(turtle, background, queue, index){
 		var current = queue[index];
 		var next;
+		this.angle;
 
-		//Définition des variables utiles à la position et la rotation de la tortue
-		this.angle = Math.atan(Math.abs((current.to.y - current.from.y))/Math.abs((current.to.x - current.from.x))) * 360/(2 * Math.PI);
-		this.distance = Math.sqrt((current.to.x - current.from.x)*(current.to.x - current.from.x) + (current.to.y - current.from.y)*(current.to.y - current.from.y));
-		console.log(this.angle);
-		console.log(current.angle);
+		if(this.animation){
+			//Définition des variables utiles à la position et la rotation de la tortue
+			//Calcul de la distance
+			this.distance = Math.sqrt((current.to.x - current.from.x)*(current.to.x - current.from.x) + (current.to.y - current.from.y)*(current.to.y - current.from.y));
+			//Calcul de l'angle
+			let angle = Math.atan((current.to.y - current.from.y)/(current.to.x - current.from.x)) * 180/Math.PI;
+			var xX = current.to.x - current.from.x;	
+			var yY = current.to.y - current.from.y;
+			if(xX >= 0 && yY >=0) this.angle = angle;
+            if(xX >= 0 && yY < 0) this.angle = angle;
+            if(xX < 0 && yY <= 0) this.angle = angle + 180;
+            if(xX < 0 && yY > 0) this.angle = 90 - angle;
 
-		//On rentre dans le IF seulement si la tortue est affichée et que l'animation est demandée
-		if(this.turtle_display && this.animation == 1) {
+            var cx = turtle.cx();
 
-			next = turtle.center(current.from.x, current.from.y)
-				.animate(1000, '-', this.delay).rotate(this.angle)		//Positionnement dans le bon angle
-				.animate(1000, '-', this.delay).dmove(this.distance, 0) //Le repère tourne avec la tortue, il ne faut donc pas modifier les coord en y
-				.during( () => { 
-					//Création et animation de la ligne pendant que la tortue suit son chemin
-					this.line = this.draw.line(current.from.x, current.from.y, current.from.x, current.from.y).stroke({ color: current.options.color, width: current.options.width})
-									.animate(1000, '-', this.delay).plot(current.from.x, current.from.y, current.to.x, current.to.y);
-				});
-		} else {
-			//Dessine la ligne sans se soucier de la tortue
-			this.line = this.draw.line(current.from.x, current.from.y, current.from.x, current.from.y).stroke({ color: current.options.color, width: current.options.width});
-			if(current.options.rounded == 0) { this.line.stroke({ linecap: 'square' }) } else this.line.stroke({ linecap: 'round' });
-			next = this.line.animate(1000, '-', this.delay).plot(current.from.x, current.from.y, current.to.x, current.to.y);
-		}
+			//Animation de la tortue
+			next = turtle.animate(this.delay, '-', 0).rotate(this.angle)
+						 .animate(this.delay, '-', 0).center(cx + this.distance, 0)
+						 .during( () => {
+							this.line = this.draw.line(current.from.x, current.from.y, current.from.x, current.from.y)
+												 .stroke({ color: current.options.color, width: current.options.width})
+												 .animate(this.delay, '-', 0).plot(current.from.x, current.from.y, current.to.x, current.to.y);
+						 });
+		} else next = this.draw.line(current.from.x, current.from.y, current.to.x, current.to.y)
+							   .animate(0, '-', 0)
+							   .stroke({ color: current.options.color, width: current.options.width});
 
-		next.after( () => {
-			if(queue[++index] != undefined) {
-				if(queue[index].command == 'BACKGROUND_COLOR') 	this.generateBackground(turtle, background, queue, index);
-				if(queue[index].command == 'DRAW') 				this.generateDraw(turtle, background, queue, index);
-				if(queue[index].command == 'RECTANGLE') 		this.generateRectangle(turtle, background, queue, index);
-				if(queue[index].command == 'ELLIPSE') 			this.generateEllipse(turtle, background, queue, index);
-				if(queue[index].command == 'CIRCLE') 			this.generateCircle(turtle, background, queue, index);
-			}
-		});
-
-		//Rend l'animation statique si elle n'est pas demandée
-		if(!this.animation) this.line.finish();
+		//Passe au prochain élément
+		this.next(turtle, background, queue, index, next);
 	}
 
 	//Génère le code des rectangles
@@ -118,23 +108,15 @@ class SVGgenerator{
 		if(current.options.rounded == 0) { this.rect.radius(0)	} else this.rect.radius(10);
 
 		//Anime le rectangle
-		next = this.rect.animate(1000, '-', this.delay)
+		next = this.rect.animate(this.delay, '-', 0)
 						.center(current.pos.x, current.pos.y)
 						//.rotate(this.angle + current.angle, current.pos.x, current.pos.y)
 						.attr({ width: current.width, height:current.height });
 
-		next.after( () => {
-			if(queue[++index] != undefined) {
-				if(queue[index].command == 'BACKGROUND_COLOR') 	this.generateBackground(turtle, background, queue, index);
-				if(queue[index].command == 'DRAW') 				this.generateDraw(turtle, background, queue, index);
-				if(queue[index].command == 'RECTANGLE') 		this.generateRectangle(turtle, background, queue, index);
-				if(queue[index].command == 'ELLIPSE') 			this.generateEllipse(turtle, background, queue, index);
-				if(queue[index].command == 'CIRCLE') 			this.generateCircle(turtle, background, queue, index);
-			}
-		});
+		if(!this.animation) next.move(current.pos.x - current.width/2, current.pos.y - current.height/2);
 
-		//Rend l'animation statique si elle n'est pas demandée
-		if(!this.animation) next.move(current.pos.x - current.width/2, current.pos.y - current.height/2).finish();
+		//Passe au prochain élément
+		this.next(turtle, background, queue, index, next);
 	}
 
 	//Génère le code des ellipses
@@ -168,7 +150,7 @@ class SVGgenerator{
 		    if(pointsList.length > 0) pointsList.removeItem(0);
 
 		    //Création point par point de l'ellipse et déplacement de la tortue dessus
-			next = this.ellipsePolyline.animate(1000, '-', this.delay).during( pos => {
+			next = this.ellipsePolyline.animate(this.delay, '-', 0).during( pos => {
 			   	if(pos > 0) {
 			   		//Ajout d'un nouveau à l'ellipse
 	                var length = pathLength*pos;
@@ -211,22 +193,12 @@ class SVGgenerator{
 			if(current.options.fill == 0) { this.ellipse.fill('none') } else this.ellipse.fill(current.options.color);
 
 			//Animation de l'ellipse
-			next = this.ellipse.animate(1000, '-', this.delay).radius(current.radius_x, current.radius_y);
+			next = this.ellipse.animate(this.delay, '-', 0).radius(current.radius_x, current.radius_y);
 			
 		}
 
-		next.after( () => {
-			if(queue[++index] != undefined) {
-				if(queue[index].command == 'BACKGROUND_COLOR') 	this.generateBackground(turtle, background, queue, index);
-				if(queue[index].command == 'DRAW') 				this.generateDraw(turtle, background, queue, index);
-				if(queue[index].command == 'RECTANGLE') 		this.generateRectangle(turtle, background, queue, index);
-				if(queue[index].command == 'ELLIPSE') 			this.generateEllipse(turtle, background, queue, index);
-				if(queue[index].command == 'CIRCLE') 			this.generateCircle(turtle, background, queue, index);
-			}
-		});
-
-		//Rend l'animation statique si elle n'est pas demandée
-		if(!this.animation) next.finish();
+		//Passe au prochain élément
+		this.next(turtle, background, queue, index, next);
 	}
 
 	//Génère le code des cercles
@@ -248,7 +220,7 @@ class SVGgenerator{
 		    if(pointsList.length > 0) pointsList.removeItem(0);
 
 		    //Animation du cercle
-		    next = this.circ.animate(1000, '-', this.delay).during(pos => {
+		    next = this.circ.animate(this.delay, '-', 0).during(pos => {
 		    	//Création des coordonnées du nouveau point
 	            var x = current.radius * Math.cos(Math.PI/2 + pos * 2*Math.PI) + current.pos.x;
 	            var y = current.radius * Math.sin(Math.PI/2 + pos * 2*Math.PI) + current.pos.y;
@@ -266,21 +238,54 @@ class SVGgenerator{
 			this.circ = this.draw.circle(2 * current.radius).move(current.pos.x - current.radius, current.pos.y - current.radius).stroke({width: current.options.width});
 			if(current.options.fill == 0) { this.circ.fill('none') } else this.circ.fill(current.options.color);
 			//Création d'une animation inutile pour pouvoir utiliser la méthode .after() en sortie du IF
-			next = this.circ.animate(0, "-", 0);
+			next = this.circ.animate(0, '-', 0);
 		}
 
-		next.after( () => {
+		//Passe au prochain élément
+		this.next(turtle, background, queue, index, next);
+	}
+
+	generateMove(turtle, background, queue, index){
+		var current = queue[index];
+		var next;
+
+		if(this.animation && this.turtle_display == 1){
+			//Définition des variables utiles à la position et la rotation de la tortue
+			//Calcul de la distance
+			this.distance = Math.sqrt((current.to.x - current.from.x)*(current.to.x - current.from.x) + (current.to.y - current.from.y)*(current.to.y - current.from.y));
+			//Calcul de l'angle
+			let angle = Math.atan((current.to.y - current.from.y)/(current.to.x - current.from.x)) * 180/Math.PI;
+			var xX = current.to.x - current.from.x;	
+			var yY = current.to.y - current.from.y;
+			if(xX >= 0 && yY >=0) this.angle = angle; //nickel
+            if(xX >= 0 && yY < 0) this.angle = angle;
+            if(xX < 0 && yY <= 0) this.angle = angle + 180;
+            if(xX < 0 && yY > 0) this.angle = 90 - angle;
+			
+			//Animation de la tortue
+			next = turtle.animate(this.delay, '-', 0).rotate(this.angle)
+						 .animate(this.delay, '-', 0).center(this.distance, 0);
+		} else next = this.draw.rect(0, 0).animate(0, '-', 0).center(current.to.x, current.to.y);
+
+		//Passe au prochain élément
+		this.next(turtle, background, queue, index, next);
+	}
+
+	next(turtle, background, queue, index, current){
+		current.after( () => {
 			if(queue[++index] != undefined) {
 				if(queue[index].command == 'BACKGROUND_COLOR') 	this.generateBackground(turtle, background, queue, index);
 				if(queue[index].command == 'DRAW') 				this.generateDraw(turtle, background, queue, index);
 				if(queue[index].command == 'RECTANGLE') 		this.generateRectangle(turtle, background, queue, index);
 				if(queue[index].command == 'ELLIPSE') 			this.generateEllipse(turtle, background, queue, index);
 				if(queue[index].command == 'CIRCLE') 			this.generateCircle(turtle, background, queue, index);
+				if(queue[index].command == 'MOVE') 				this.generateMove(turtle, background, queue, index);
+				if(queue[index].command == 'MOVE') 				this.generateMove(turtle, background, queue, index);
 			}
 		});
 
 		//Rend l'animation statique si elle n'est pas demandée
-		if(!this.animation) next.finish();
+		if(!this.animation) current.finish();
 	}
 
 	//Nettoie l'écran
