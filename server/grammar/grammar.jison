@@ -241,8 +241,8 @@ commande
         }
     | 'MOVE' expr 'SEMICOLON'
         {
-            var x = Math.round(Number($2) * Math.cos(turtle_angle * (Math.PI/180)));
-            var y = Math.round(Number($2) * Math.sin(turtle_angle * (Math.PI/180)));
+            var x = turtle_x + Math.round(Number($2) * Math.cos(turtle_angle * (Math.PI/180)));
+            var y = turtle_y + Math.round(Number($2) * Math.sin(turtle_angle * (Math.PI/180)));
 
             instructions.push({
                 command: "MOVE",
