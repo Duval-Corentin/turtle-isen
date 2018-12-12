@@ -81,11 +81,7 @@ export default {
           this.$http.post('http://localhost:5000/compile', {
             "code" : this.editor_content
           }).then(function (response) {
-<<<<<<< HEAD
             console.log(response.body)
-=======
-            console.log(response.body);
->>>>>>> 8b4d962ef9ce8ab2e68b306d7448a23f01afbdf8
             this.is_compiling = false;
             if(response.body.error){
               this.compilation_successful = false;
