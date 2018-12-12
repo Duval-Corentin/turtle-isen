@@ -65,17 +65,20 @@ class SVGgenerator{
 	generateDraw(turtle, background, queue, index){
 		var current = queue[index];
 		var next;
+		console.log(current.options.rounded);
 
 		//Rentre dans la boucle IF pour tracer sans animation
 		if(!this.animation){
 			next = this.draw.line(current.from.x, current.from.y, current.to.x, current.to.y)
 							.animate(0, '-', 0)
 							.stroke({ color: current.options.color, width: current.options.width});
+			if(current.options.rounded) next.stroke({ linecap: 'round' });
 		//Rentre dans la boucle IF pour tracer avec animation mais sans afichage de la tortue
 		} else if(!this.turtle_display){
 			next = this.draw.line(current.from.x, current.from.y, current.to.x, current.to.y)
 							.stroke({ color: current.options.color, width: current.options.width})
-							.animate(this.delay, '-', 0).plot(current.from.x, current.from.y, current.to.x, current.to.y);
+			if(current.options.rounded) next.stroke({ linecap: 'round' });
+			next.animate(this.delay, '-', 0).plot(current.from.x, current.from.y, current.to.x, current.to.y);
 		//Rentre dans la boucle IF pour tracer avec animation et affichage de la tortue
 		} else {
 			//Définition des variables utiles à la position et la rotation de la tortue
@@ -98,7 +101,8 @@ class SVGgenerator{
 						 .during( () => {
 							this.line = this.draw.line(current.from.x, current.from.y, current.from.x, current.from.y)
 												 .stroke({ color: current.options.color, width: current.options.width})
-												 .animate(this.delay, '-', 0).plot(current.from.x, current.from.y, current.to.x, current.to.y);
+							if(current.options.rounded) this.line.stroke({ linecap: 'round' });
+							this.line.animate(this.delay, '-', 0).plot(current.from.x, current.from.y, current.to.x, current.to.y);
 						 });
 		}
 
@@ -119,7 +123,7 @@ class SVGgenerator{
 		//Anime le rectangle
 		next = this.rect.animate(this.delay, '-', 0)
 						.center(current.pos.x, current.pos.y)
-						.rotate(this.angle + current.angle, current.pos.x, current.pos.y)
+						.rotate(current.angle, current.pos.x, current.pos.y)
 						.attr({ width: current.width, height:current.height });
 
 		if(!this.animation) next.move(current.pos.x - current.width/2, current.pos.y - current.height/2);

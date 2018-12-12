@@ -51,7 +51,6 @@
         </div>
         <sui-divider horizontal> Compilation </sui-divider>
         <sui-button size="big" color="blue" content="Lancer" :loading="is_compiling" v-on:click="$emit('compile', getCompileOptions())"/>
-        <sui-button size="big" color="blue" content="Telecharger" :disabled="!compilation_successful" />
     </div>
 </template>
 

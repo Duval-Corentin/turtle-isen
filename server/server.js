@@ -32,10 +32,11 @@ router.route('/compile')
         response = parser.parse(req.body.code);
     }catch(e){
         response = {
-            error: e
+            error: e.toString()
         }
     }
     res.json(response);
+    console.log(typeof response.error);
 });
 
 router.route('/')

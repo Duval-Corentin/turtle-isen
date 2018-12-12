@@ -15,7 +15,7 @@
           </sui-grid-column>
         <sui-grid-column :width="3"> <var_table :variables="variables" :turtle_variables="turtle_variables"></var_table> </sui-grid-column>
         <sui-grid-column :width="3"> <utilitary></utilitary> </sui-grid-column>
-        <sui-grid-column :width="5"> <keep-alive> <options_compilator :is_compiling="is_compiling" :compilation_successful="compilation_successful" v-on:compile="onCompile" v-on:download="onDownload"></options_compilator> </keep-alive> </sui-grid-column>
+        <sui-grid-column :width="5"> <keep-alive> <options_compilator :is_compiling="is_compiling" :compilation_successful="compilation_successful" v-on:compile="onCompile"></options_compilator> </keep-alive> </sui-grid-column>
       </sui-grid-row>
 
       <sui-grid-row>
@@ -92,6 +92,7 @@ export default {
               this.compile_options = compile_options;
             }
             this.machine_code = response.body;
+            console.log(this.machine_code);
           });
         }
   }
