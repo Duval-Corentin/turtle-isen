@@ -26,8 +26,7 @@
 ";"                   return 'SEMICOLON'
 ":"                   return 'COLON'
 
-"nombre"|"Nombre"|"NOMBRE"     return 'NUMBER_VAR'
-"couleur"|"Couleur"|"COULEUR"  return 'COLOR_VAR'
+"var"    return 'VARIABLE'
 
 "c:"                  return 'C_OPT'
 "l:"                  return 'L_OPT'
@@ -60,17 +59,16 @@
 
     var instructions = []
     var variables = new Map();
-    var color_variables = new Map();
-    color_variables["rouge"] = "#FF0000";
-    color_variables["bleu"] = "#0000FF";
-    color_variables["vert"] = "#00FF00";
-    color_variables["jaune"] = "#FFFF00";
-    color_variables["violet"] = "#FF00FF";
-    color_variables["blanc"] = "#FFFFFF";
-    color_variables["noir"] = "#000000";
-    color_variables["bleu_ciel"] = "#00FFF0";
-    color_variables["orange"] = "#FF9300";
-    color_variables["rose"] = "#FF0059";
+    variables.set("rouge", "#FF0000");
+    variables.set("bleu", "#0000FF");
+    variables.set("vert", "#00FF00");
+    variables.set("jaune", "#FFFF00");
+    variables.set("violet", "#FF00FF");
+    variables.set("blanc", "#FFFFFF");
+    variables.set("noir", "#000000");
+    variables.set("bleu_ciel", "#00FFF0");
+    variables.set("orange", "#FF9300");
+    variables.set("rose","#FF0059");
 
     const base_options = {
         draw: {
@@ -108,9 +106,26 @@
 pgm
     : elements EOF
         {
+            variables.delete("rouge");
+            variables.delete("bleu");
+            variables.delete("vert");
+            variables.delete("jaune");
+            variables.delete("violet");
+            variables.delete("blanc");
+            variables.delete("noir");
+            variables.delete("bleu_ciel");
+            variables.delete("orange");
+            variables.delete("rose");
+
+            var return_variables = {};
+
+            for(let [k, v] of variables) {
+                return_variables[k] = v;
+            }
+
             return {
                 instructions: instructions,
-                variables: variables,
+                variables: return_variables,
                 turtle_pos: {
                     x: turtle_x,
                     y: turtle_y,
@@ -345,34 +360,34 @@ commande
             });
         }
     /* Rules for variables management */
-    | 'NUMBER_VAR' 'IDENTIFIER' 'EQUAL' expr 'SEMICOLON'
+    | 'VARIABLE' 'IDENTIFIER' 'EQUAL' expr 'SEMICOLON'
         {
-            if(!variables[String($2)]){
-                variables[String($2)] = Number($4);
+            if(!variables.has(String($2))){
+                variables.set(String($2), Number($4));
             }else{
-                throw new Error("Number variable " + String($2) + " allready defined before");
+                throw new Error("Variable " + String($2) + " allready defined before");
             }
         }
     | 'IDENTIFIER' 'EQUAL' expr 'SEMICOLON'
         {
-            if(variables[String($1)]){
-                variables[String($1)] = $3;
+            if(variables.has(String($1))){
+                variables.set(String($1), Number($3));
             }else{
                 throw new Error("Variable " + String($1) + " must be declared before assignation");
             }
         }
-    | 'COLOR_VAR' 'IDENTIFIER' 'EQUAL' color 'SEMICOLON'
+    | 'VARIABLE' 'IDENTIFIER' 'EQUAL' color 'SEMICOLON'
         {
-            if(!color_variables[String($2)]){
-                color_variables[String($2)] = String($4);
+            if(!variables.has(String($2))){
+                variables.set(String($2), String($4));
             } else {
-                throw new Error("Color variable " + String($2) + " allready defined before");
+                throw new Error("variable " + String($2) + " allready defined before");
             }
         }
     | 'IDENTIFIER' 'EQUAL' color 'SEMICOLON'
         {
-            if(color_variables[String($1)]){
-                color_variables[String($1)] = String($3);
+            if(variables.has(String($1))){
+                variables.set(String($1), String($3));
             }else{
                 throw new Error("Variable " + String($1) + " must be declared before assignation");
             }
@@ -433,10 +448,12 @@ expr
         {$$ = Number(yytext);}
     | IDENTIFIER 
         {
-            if(variables[String($1)] != undefined){
-                $$ = Number(variables[String($1)])
-            }else{
-                throw new Error(" Number variable " + String($1) + " must be declared before");
+            if(!variables.has(String($1))){
+                throw new Error(" variable " + String($1) + " must be declared before");
+            } else if ( typeof variables.get(String($1)) != "number" ){
+                throw new Error(" variable " + String($1) + " must be of type number");
+            } else {
+                $$ = Number(variables.get(String($1)));
             }
         }
     | E
@@ -452,10 +469,12 @@ color
         }
     | IDENTIFIER
         {
-            if(color_variables[String($1)] != undefined){
-                $$ = String(color_variables[String($1)])
-            }else{
-                throw new Error(" Color variable " + String($1) + " must be declared before");
+            if(!variables.has(String($1))){
+                throw new Error(" variable " + String($1) + " must be declared before");
+            } else if ( typeof variables.get(String($1)) != "string" ){
+                throw new Error(" variable " + String($1) + " must be of type color");
+            } else {
+                $$ = String(variables.get(String($1)))
             }
         }
     ;

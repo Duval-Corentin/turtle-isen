@@ -14,12 +14,12 @@
                 <sui-table-body class="table_body">
                     <sui-table-row v-for="(value, key) in turtle_variables" :key="key" state='warning'>
                         <sui-table-cell>tortue_{{key}}</sui-table-cell>
-                        <sui-table-cell>{{typeof value}}</sui-table-cell>
+                        <sui-table-cell>{{typeof value == "string" ? "couleur":"nombre"}}</sui-table-cell>
                         <sui-table-cell>{{value}}</sui-table-cell>
                     </sui-table-row>
                     <sui-table-row v-for="(value, key) in variables" :key="key">
                         <sui-table-cell>{{key}}</sui-table-cell>
-                        <sui-table-cell>{{typeof value}}</sui-table-cell>
+                        <sui-table-cell>{{typeof value == "string" ? "couleur":"nombre"}}</sui-table-cell>
                         <sui-table-cell>{{value}}</sui-table-cell>
                     </sui-table-row>
                 </sui-table-body>

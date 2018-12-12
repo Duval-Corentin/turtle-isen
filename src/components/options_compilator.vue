@@ -68,7 +68,7 @@ export default {
             minimum_width: 50,
             minimum_height: 50,
             turtle_display: true,
-            between_frame_delay: 300,
+            between_frame_delay: 600,
             min_frame_delay: 10,
             max_frame_delay: 3000
         }
