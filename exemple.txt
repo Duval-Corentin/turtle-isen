@@ -86,3 +86,34 @@ tracer x+largExte:y-hauteur l:5 c:ma_couleur a:1;
 tracer x:y-hauteur l:5 c:ma_couleur a:1;
 
 
+---- EXAMPLE CODE ----
+
+// un joli commentaire
+
+tracer 200 l:1 a:1 c:bleu_ciel;
+
+// differents type de variables
+var ma_couleur01 = #FFAADD;
+var nombre01 = 10 * (20 < 22);
+
+// differents arguments pour 1 seul commande
+tracer nombre01;
+tracer 200:300;
+tracer 200:300 c:rouge l:3 a:1;
+tracer 200 l:10 a:(6 > 2) c:#2211EE;
+
+
+// utiliser le mode coordonnees ou angle
+tourner 45;
+tracer 300;
+
+tracer 200:300;
+
+// 7 commandes implementes
+tracer 200;
+tourner 90;
+rectangle 200 100;
+cercle 60;
+ellipse 20 40;
+fond #223344;
+déplacer 100:200;
