@@ -36,7 +36,6 @@ router.route('/compile')
         }
     }
     res.json(response);
-    console.log(typeof response.error);
 });
 
 router.route('/')

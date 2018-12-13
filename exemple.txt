@@ -1,2 +1,88 @@
 ---- EXAMPLE HOUSE ----
 
+// variables de couleur
+var couleur_maison = #8D0617;
+var couleur_ciel = #4A90E2;
+var couleur_herbe = #7Ed321;
+var couleur_porte = #8B572A;
+var couleur_toit = #664646;
+
+// variables de position
+var largeur_maison = 500;
+var hauteur_maison = 300;
+
+fond couleur_ciel;
+déplacer 0:700;
+rectangle 10000 400 c:couleur_herbe l:0 r:1;
+déplacer 300:200;
+rectangle 300 100 l:0 c:couleur_toit r:1;
+déplacer 132:239;
+tourner -45;
+rectangle 150 100 l:0 c:couleur_toit r:1;
+tourner 45;
+déplacer 335;
+tourner 45;
+rectangle 150 100 l:0 c:couleur_toit r:1;
+tourner -160;
+déplacer 120;
+tourner 25;
+rectangle 70 40 r:1 l:0 c:couleur_maison;
+tourner 20;
+déplacer 40;
+cercle 10 c:#DCDCDC r:1 l:0;
+tourner -60;
+déplacer 20;
+cercle 10 c:#DCDCDC r:1 l:0;
+tourner 30;
+déplacer 30;
+cercle 10 c:#DCDCDC r:1 l:0;
+tourner -20;
+déplacer 10;
+cercle 15 c:#DCDCDC r:1 l:0;
+tourner -10;
+déplacer 20;
+cercle 12 c:#DCDCDC r:1 l:0;
+tourner 130;
+déplacer 300:400;
+rectangle largeur_maison hauteur_maison l:0 c:couleur_maison r:1;
+tourner 90;
+déplacer hauteur_maison/3;
+rectangle 100 70 r:1 c:couleur_porte;
+tourner -135;
+déplacer 200;
+tourner 45;
+rectangle 70 70 r:1 c:couleur_porte;
+rectangle 50 50 r:1 c:couleur_ciel;
+tourner 180;
+déplacer 270;
+rectangle 70 70 r:1 c:couleur_porte;
+rectangle 50 50 r:1 c:couleur_ciel;
+
+
+---- EXAMPLE M ----
+
+// un joli commentaire
+var x = 10;
+var y = 200;
+
+var largExte = 40;
+var largMili = 50;
+var hauteur = 180;
+
+var ma_couleur = #E7981C;
+
+deplacer x:y-hauteur;
+tracer x:y l:5 c:ma_couleur a:1;
+tracer x+largExte:y l:5 c:ma_couleur a:1;
+tracer x+largExte:y-hauteur/2 l:5 c:ma_couleur a:1;
+tracer x+largExte+largMili/2:y-(2/9)*hauteur l:5 c:ma_couleur a:1;
+tracer x+largExte+largMili:y-hauteur/2 l:5 c:ma_couleur a:1;
+tracer x+largExte+largMili:y l:5 c:ma_couleur a:1;
+tracer x+2*largExte+largMili:y l:5 c:ma_couleur a:1;
+tracer x+2*largExte+largMili:y-hauteur l:5 c:ma_couleur a:1;
+tracer x+largExte+largMili:y-hauteur l:5 c:ma_couleur a:1;
+tracer x+largExte+largMili/2:y-(23/36)*hauteur l:5 c:ma_couleur a:1;
+tracer x+largExte:y-hauteur l:5 c:ma_couleur a:1;
+tracer x:y-hauteur l:5 c:ma_couleur a:1;
+
+

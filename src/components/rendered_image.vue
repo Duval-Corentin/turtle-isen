@@ -3,7 +3,7 @@
         <sui-header color='blue' size='big'> Résultat </sui-header>
         <sui-message id="error-message" :error="true" v-if="Boolean(machine_code.error)">
             <h2>La compilation a échoué</h2>
-            <p> {{machine_code.error}} </p>
+            <p> {{machine_code.error.includes("Parse error on line")? "Error : syntaxe error" : machine_code.error}} </p>
         </sui-message>
         <div id="canvas" v-show="!Boolean(machine_code.error)">
         </div>
